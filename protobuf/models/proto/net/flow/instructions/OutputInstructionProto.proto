@@ -1,0 +1,18 @@
+syntax = "proto3";
+option java_package = "org.onosproject.grpc.net.flow.instructions.models";
+
+package net.flow.instructions;
+
+
+
+import "core/protobuf/models/proto/net/PortProto.proto";
+import "core/protobuf/models/proto/net/flow/instructions/InstructionProto.proto";
+
+
+
+message OutputInstructionProto {
+
+    InstructionProto instructionType = 1;
+    PortProto port = 2;
+
+}

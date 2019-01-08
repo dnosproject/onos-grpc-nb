@@ -1,0 +1,58 @@
+syntax = "proto3";
+option java_package = "org.onosproject.grpc.net.models";
+
+package net.packet;
+
+import "core/protobuf/models/proto/net/packet/OutboundPacketProto.proto";
+import "core/protobuf/models/proto/net/packet/PacketContextProto.proto";
+import "core/protobuf/models/proto/net/link/LinkEventProto.proto";
+
+service PacketOutService {
+    rpc emit (OutboundPacketProto) returns (PacketOutStatus);
+}
+
+message PacketOutStatus {
+    bool stat = 1;
+}
+
+
+service EventNotification {
+    rpc register (RegistrationRequest) returns (RegistrationResponse);
+    rpc onEvent (Topic) returns (stream Notification);
+
+}
+
+
+enum topicType {
+    PACKET_EVENT = 0;
+    LINK_EVENT = 1;
+}
+
+
+message RegistrationRequest {
+    string clientId = 1;
+}
+
+message RegistrationResponse {
+    string clientId = 1;
+    string serverId = 2;
+}
+
+message Topic {
+    string clientId = 1;
+    topicType type = 2;
+}
+
+message Notification {
+    string clientId = 1;
+    string serverId = 2;
+    topicType type = 3;
+    oneof event {
+        PacketContextProto packetContext = 4;
+        net.link.LinkNotificationProto linkEvent = 5;
+
+    }
+
+
+
+}
