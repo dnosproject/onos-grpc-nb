@@ -118,7 +118,6 @@ public class EventNotificationServiceImpl extends EventNotificationImplBase
                                 observerMap.get(key).onNext(notification);
                             };
 
-                    //log.info(packetContextProto.getInboundPacket().getConnectPoint().getDeviceId());
                     executorService.execute(runnable);
 
 
@@ -128,7 +127,6 @@ public class EventNotificationServiceImpl extends EventNotificationImplBase
         }
     }
     private class InternalLinkListener implements LinkListener {
-
 
         @Override
         public void event(LinkEvent event) {

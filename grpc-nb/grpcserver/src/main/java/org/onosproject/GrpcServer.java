@@ -7,10 +7,14 @@ import org.onosproject.cfg.ComponentConfigService;
 import org.onosproject.impl.eventNotificationService.EventNotificationServiceImpl;
 import org.onosproject.impl.packetOutService.PacketOutServiceImpl;
 import org.osgi.service.component.ComponentContext;
-import org.osgi.service.component.annotations.*;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.Dictionary;
 
@@ -32,16 +36,18 @@ public class GrpcServer implements GrpcInterface {
   private InternalGrpcServer grpcServer;
 
   @Activate
-  protected void activate() {
+  protected void activate(ComponentContext ctx) {
 
     cfgService.registerProperties(getClass());
     grpcServer = new InternalGrpcServer();
+    readComponentConfiguration(ctx);
 
     try {
       grpcServer.start();
     } catch (IOException e) {
       e.printStackTrace();
     }
+    log.info("started");
   }
 
   @Deactivate
@@ -49,6 +55,7 @@ public class GrpcServer implements GrpcInterface {
 
     cfgService.unregisterProperties(getClass(), false);
     grpcServer.stop();
+    log.info("Stopped");
   }
 
     @Modified
@@ -59,7 +66,6 @@ public class GrpcServer implements GrpcInterface {
 
     private void readComponentConfiguration(ComponentContext context) {
         Dictionary<?, ?> properties = context.getProperties();
-
         grpcPort = Tools.getIntegerProperty(properties, GRPC_PORT, GRPC_PORT_DEFAULT);
         log.info("Configured. GRPC port is configured to {} ", grpcPort);
 
@@ -71,11 +77,10 @@ public class GrpcServer implements GrpcInterface {
 
       server =
           NettyServerBuilder.forPort(grpcPort)
-              .addService(new PacketOutServiceImpl())
+                  .addService(new PacketOutServiceImpl())
                   .addService(new EventNotificationServiceImpl())
-              //.addService(new PacketEventServiceImpl())
-              .build()
-              .start();
+                  .build()
+                  .start();
     }
 
     private void stop() {

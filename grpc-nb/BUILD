@@ -27,8 +27,8 @@ BUNDLES = [
     "@io_netty_netty_transport_native_epoll//jar",
     "@io_netty_netty_resolver//jar",
     "//core/protobuf/models:onos-core-protobuf-models",
-    #"//core/protobuf/models/proto:onos-core-protobuf-models-proto",
-    "//core/protobuf/models/proto:onos-core-protobuf-services-proto",
+    "//core/protobuf/models/proto:onos-core-protobuf-models-proto",
+    #"//core/protobuf/models/proto:onos-core-protobuf-services-proto",
 ]
 
 wrapped_osgi_jar(
